@@ -56,6 +56,23 @@ struct HangulComposerTests {
         #expect(!composer.hasComposition)
     }
 
+    @Test("쌍자음 뒤 Shift가 남은 대문자 모음도 한글로 조합한다")
+    func acceptsStickyShiftVowelsAfterDoubleConsonant() {
+        var composer = HangulComposer()
+        let output = type("TM", into: &composer)
+
+        #expect(output + composer.commit() == "쓰")
+    }
+
+    @Test("대문자 N/B도 ㅜ/ㅠ로 조합한다")
+    func acceptsUppercaseUVowels() {
+        var composer = HangulComposer()
+        #expect(type("dN", into: &composer) + composer.commit() == "우")
+
+        composer = HangulComposer()
+        #expect(type("tB", into: &composer) + composer.commit() == "슈")
+    }
+
     @Test("모음 뒤 자음을 이전 음절로 재배열하지 않는다")
     func preservesJamoOrder() {
         var composer = HangulComposer()

@@ -37,24 +37,14 @@ final class GeulGuardInputController: IMKInputController {
             return true
         }
 
-        let disallowedModifiers: NSEvent.ModifierFlags = [.command, .control, .option]
-        guard event.modifierFlags.intersection(disallowedModifiers).isEmpty,
-              let characters = event.characters,
-              characters.count == 1,
-              var character = characters.first else {
+        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty,
+              let character = hangulKey(from: event) else {
             commitComposition(to: client)
             return false
         }
 
-        // Caps Lock should not turn every consonant/vowel into its Shift variant.
-        if event.modifierFlags.contains(.capsLock),
-           !event.modifierFlags.contains(.shift),
-           let normalized = String(character).lowercased().first {
-            character = normalized
-        }
-
         guard let update = composer.input(character) else {
-            // The fix: never let navigation, focus-changing keys, shortcuts, or
+            // Never let navigation, focus-changing keys, shortcuts, or
             // punctuation cancel marked Hangul. Commit it synchronously first.
             commitComposition(to: client)
             return false
@@ -86,17 +76,59 @@ final class GeulGuardInputController: IMKInputController {
             client.insertText(update.committed, replacementRange: noReplacement)
         }
 
+        // Plain strings often render as a selection highlight in Electron/Chromium.
+        // An underlined attributed string matches system IME marked-text styling.
+        let marked = NSAttributedString(
+            string: update.composing,
+            attributes: [
+                .underlineStyle: NSUnderlineStyle.single.rawValue
+            ]
+        )
         client.setMarkedText(
-            update.composing,
-            selectionRange: NSRange(location: update.composing.utf16.count, length: 0),
+            marked,
+            selectionRange: NSRange(location: marked.length, length: 0),
             replacementRange: noReplacement
         )
     }
 
     private func commitComposition(to client: IMKTextInput) {
         let committed = composer.commit()
+        client.setMarkedText(
+            NSAttributedString(string: ""),
+            selectionRange: NSRange(location: 0, length: 0),
+            replacementRange: noReplacement
+        )
         guard !committed.isEmpty else { return }
         client.insertText(committed, replacementRange: noReplacement)
+    }
+
+    /// Maps a key event to 두벌식 Latin keys without letting a still-held Shift
+    /// after ㄲ/ㄸ/ㅃ/ㅆ/ㅉ leak as ASCII (`ㅆ` + `M` instead of `쓰`).
+    private func hangulKey(from event: NSEvent) -> Character? {
+        guard let raw = event.charactersIgnoringModifiers,
+              raw.count == 1,
+              let base = raw.lowercased().first,
+              base.isASCII,
+              base.isLetter else {
+            // Punctuation / space: prefer characters so shifted symbols work.
+            guard let characters = event.characters,
+                  characters.count == 1,
+                  let character = characters.first,
+                  !character.isLetter else {
+                return nil
+            }
+            return character
+        }
+
+        let shifted = event.modifierFlags.contains(.shift)
+        let shiftVariants: [Character: Character] = [
+            "q": "Q", "w": "W", "e": "E", "r": "R", "t": "T",
+            "o": "O", "p": "P"
+        ]
+        if shifted, let variant = shiftVariants[base] {
+            return variant
+        }
+        return base
     }
 
     private func isModeToggle(_ event: NSEvent) -> Bool {

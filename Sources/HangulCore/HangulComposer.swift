@@ -192,15 +192,20 @@ private extension HangulComposer {
         }
     }
 
+    // Uppercase aliases cover “Shift still held after ㄲ/ㄸ/ㅃ/ㅆ/ㅉ”.
+    // Shift-significant keys (QWERTO P) keep distinct uppercase mappings.
     static let initials: [Character: Int] = [
-        "r": 0, "R": 1, "s": 2, "e": 3, "E": 4, "f": 5, "a": 6,
-        "q": 7, "Q": 8, "t": 9, "T": 10, "d": 11, "w": 12, "W": 13,
-        "c": 14, "z": 15, "x": 16, "v": 17, "g": 18
+        "r": 0, "R": 1, "s": 2, "S": 2, "e": 3, "E": 4, "f": 5, "F": 5,
+        "a": 6, "A": 6, "q": 7, "Q": 8, "t": 9, "T": 10, "d": 11, "D": 11,
+        "w": 12, "W": 13, "c": 14, "C": 14, "z": 15, "Z": 15,
+        "x": 16, "X": 16, "v": 17, "V": 17, "g": 18, "G": 18
     ]
 
     static let vowels: [Character: Int] = [
-        "k": 0, "o": 1, "i": 2, "O": 3, "j": 4, "p": 5, "u": 6,
-        "P": 7, "h": 8, "y": 12, "n": 13, "b": 17, "m": 18, "l": 20
+        "k": 0, "K": 0, "o": 1, "i": 2, "I": 2, "O": 3, "j": 4, "J": 4,
+        "p": 5, "u": 6, "U": 6, "P": 7, "h": 8, "H": 8,
+        "y": 12, "Y": 12, "n": 13, "N": 13, "b": 17, "B": 17,
+        "m": 18, "M": 18, "l": 20, "L": 20
     ]
 
     static let compatibilityInitials = [

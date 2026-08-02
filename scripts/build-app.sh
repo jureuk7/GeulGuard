@@ -12,11 +12,13 @@ mkdir -p "$module_cache"
 export CLANG_MODULE_CACHE_PATH="$module_cache"
 export SWIFTPM_MODULECACHE_OVERRIDE="$module_cache"
 
+# Keep build logs on stderr so callers can capture only the app path from stdout.
 swift build \
   --package-path "$project_root" \
   --configuration "$configuration" \
   --disable-sandbox \
-  --scratch-path "$scratch_path"
+  --scratch-path "$scratch_path" \
+  1>&2
 
 binary_path="$(swift build \
   --package-path "$project_root" \
@@ -31,6 +33,12 @@ fi
 mkdir -p "$app_path/Contents/MacOS" "$app_path/Contents/Resources"
 COPYFILE_DISABLE=1 cp "$binary_path" "$app_path/Contents/MacOS/GeulGuardInput"
 COPYFILE_DISABLE=1 cp "$project_root/Resources/Info.plist" "$app_path/Contents/Info.plist"
+for localization in ko en; do
+  mkdir -p "$app_path/Contents/Resources/${localization}.lproj"
+  COPYFILE_DISABLE=1 cp \
+    "$project_root/Resources/${localization}.lproj/InfoPlist.strings" \
+    "$app_path/Contents/Resources/${localization}.lproj/InfoPlist.strings"
+done
 swift "$project_root/scripts/make-icon.swift" \
   "$app_path/Contents/Resources/GeulGuard.tiff"
 xattr -cr "$app_path"
