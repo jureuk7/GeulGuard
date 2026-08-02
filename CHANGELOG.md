@@ -2,6 +2,13 @@
 
 All notable changes to GeulGuard are documented in this file.
 
+## [0.3.0] - 2026-08-03
+
+- Universal Binary 앱을 Developer ID로 서명하고 공증된 PKG로 만드는 릴리스
+  스크립트를 추가했습니다.
+- 메뉴 아이콘을 macOS 입력 소스와 어울리는 단색 언어 배지로 개선했습니다.
+- Finder와 설치 패키지에 표시되는 글가드 앱 아이콘을 추가했습니다.
+
 ## [0.2.0] - 2026-08-03
 
 - Shift가 눌린 채 이어서 입력한 모음이 영문으로 새는 문제를 수정했습니다.

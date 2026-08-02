@@ -36,19 +36,29 @@ func renderMenuIcon(pixels: Int) -> NSBitmapImageRep {
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 
+    let badge = NSBezierPath(
+        roundedRect: NSRect(x: 0.5, y: 0.5, width: 15, height: 15),
+        xRadius: 3.5,
+        yRadius: 3.5
+    )
+    NSColor.black.setFill()
+    badge.fill()
+
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
     let attributes: [NSAttributedString.Key: Any] = [
-        .font: NSFont.systemFont(ofSize: 11, weight: .semibold),
-        .foregroundColor: NSColor.black,
+        .font: NSFont.systemFont(ofSize: 9, weight: .bold),
+        .foregroundColor: NSColor.white,
         .paragraphStyle: paragraph
     ]
 
-    let text = NSString(string: "글")
+    // Match native input-source icons: a compact language indicator rather
+    // than a branded app glyph.
+    let text = NSString(string: "한")
     let textSize = text.size(withAttributes: attributes)
     let origin = NSPoint(
         x: (16 - textSize.width) / 2,
-        y: (16 - textSize.height) / 2 - 0.5
+        y: (16 - textSize.height) / 2
     )
     text.draw(at: origin, withAttributes: attributes)
 
