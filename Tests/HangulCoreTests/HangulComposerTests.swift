@@ -73,6 +73,21 @@ struct HangulComposerTests {
         #expect(type("tB", into: &composer) + composer.commit() == "슈")
     }
 
+    @Test("직접 입력한 쌍자음을 다음 음절 초성으로 통째로 이동한다")
+    func movesDirectDoubleConsonantToNextSyllable() {
+        var composer = HangulComposer()
+        #expect(type("smRla", into: &composer) + composer.commit() == "느낌")
+
+        composer = HangulComposer()
+        #expect(type("dlTj", into: &composer) + composer.commit() == "이써")
+    }
+
+    @Test("두 자음으로 조합한 겹받침은 모음 앞에서 분리한다")
+    func splitsComposedDoubleFinalBeforeVowel() {
+        var composer = HangulComposer()
+        #expect(type("rkrrk", into: &composer) + composer.commit() == "각가")
+    }
+
     @Test("모음 뒤 자음을 이전 음절로 재배열하지 않는다")
     func preservesJamoOrder() {
         var composer = HangulComposer()

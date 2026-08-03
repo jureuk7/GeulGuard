@@ -19,6 +19,7 @@ public struct HangulComposer: Sendable {
     private var initial: Int?
     private var medial: Int?
     private var final: Int?
+    private var finalIsDirectDouble = false
 
     public init() {}
 
@@ -35,7 +36,10 @@ public struct HangulComposer: Sendable {
             return inputVowel(vowel)
         }
         if let consonant = Self.initials[character] {
-            return inputConsonant(consonant)
+            return inputConsonant(
+                consonant,
+                isDirectDouble: character == "R" || character == "T"
+            )
         }
         return nil
     }
@@ -45,6 +49,7 @@ public struct HangulComposer: Sendable {
 
         if let final {
             self.final = Self.splitFinals[final]?.0
+            finalIsDirectDouble = false
         } else if let medial {
             self.medial = Self.splitMedials[medial]?.0
         } else if let initial {
@@ -64,7 +69,10 @@ public struct HangulComposer: Sendable {
         reset()
     }
 
-    private mutating func inputConsonant(_ consonant: Int) -> CompositionUpdate {
+    private mutating func inputConsonant(
+        _ consonant: Int,
+        isDirectDouble: Bool
+    ) -> CompositionUpdate {
         guard let currentInitial = initial else {
             if medial != nil {
                 let committed = composingText
@@ -90,6 +98,7 @@ public struct HangulComposer: Sendable {
         guard let currentFinal = final else {
             if let simpleFinal = Self.initialToFinal[consonant] {
                 final = simpleFinal
+                finalIsDirectDouble = isDirectDouble
                 return CompositionUpdate(composing: composingText)
             }
 
@@ -101,6 +110,7 @@ public struct HangulComposer: Sendable {
 
         if let nextFinal = Self.combinedFinals[Pair(currentFinal, consonant)] {
             final = nextFinal
+            finalIsDirectDouble = false
             return CompositionUpdate(composing: composingText)
         }
 
@@ -108,6 +118,7 @@ public struct HangulComposer: Sendable {
         initial = consonant
         medial = nil
         final = nil
+        finalIsDirectDouble = false
         return CompositionUpdate(committed: committed, composing: composingText)
     }
 
@@ -144,12 +155,23 @@ public struct HangulComposer: Sendable {
         }
 
         let priorInitial = initial
+        if finalIsDirectDouble,
+           let nextInitial = Self.finalToInitial[currentFinal] {
+            let committed = render(initial: priorInitial, medial: currentMedial, final: nil)
+            initial = nextInitial
+            medial = vowel
+            final = nil
+            finalIsDirectDouble = false
+            return CompositionUpdate(committed: committed, composing: composingText)
+        }
+
         if let split = Self.splitFinals[currentFinal] {
             final = split.0
             let committed = render(initial: priorInitial, medial: currentMedial, final: final)
             initial = split.1
             medial = vowel
             final = nil
+            finalIsDirectDouble = false
             return CompositionUpdate(committed: committed, composing: composingText)
         }
 
@@ -157,6 +179,7 @@ public struct HangulComposer: Sendable {
         initial = Self.finalToInitial[currentFinal]
         medial = vowel
         final = nil
+        finalIsDirectDouble = false
         return CompositionUpdate(committed: committed, composing: composingText)
     }
 
@@ -164,6 +187,7 @@ public struct HangulComposer: Sendable {
         initial = nil
         medial = nil
         final = nil
+        finalIsDirectDouble = false
     }
 
     private func render(initial: Int?, medial: Int?, final: Int?) -> String {

@@ -2,6 +2,11 @@
 
 All notable changes to GeulGuard are documented in this file.
 
+## [0.3.1] - 2026-08-03
+
+- `느낌`처럼 쌍자음으로 다음 음절을 시작하는 단어가 `늑김`으로 잘못 조합되는
+  문제를 수정했습니다.
+
 ## [0.3.0] - 2026-08-03
 
 - Universal Binary 앱을 Developer ID로 서명하고 공증된 PKG로 만드는 릴리스
