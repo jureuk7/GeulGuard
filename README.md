@@ -65,27 +65,14 @@ ESC는 조합 중인 한글만 확정하며 입력 소스를 바꾸지 않습니
 Karabiner가 실행 중이고 해당 키보드를 처리할 때 적용되며, 로그인 전 화면에는
 이 설정이 그대로 적용된다고 가정하지 마세요. 대문자는 Shift로 입력합니다.
 
-### 3. 영어 키를 길게 누르면 악센트 메뉴가 뜰 때
-
-`a`를 누르고 있을 때 `à á â …`가 뜨는 것은 macOS의 길게 누르기 악센트 메뉴입니다.
-영문 키 반복을 원하면 `ApplePressAndHoldEnabled`를 `false`로 설정합니다.
-전체 앱에 적용하는 전역 설정과 특정 앱에만 적용하는 설정 중 범위를 선택하세요.
-앱별 값이 있으면 전역 설정과 함께 확인해야 합니다. 변경 뒤 해당 앱을 완전히
-종료하고 다시 실행하세요. 반영되지 않으면 작업을 저장한 뒤 로그아웃/로그인합니다.
-키 반복 속도와 반복 지연은 시스템 설정 → 키보드에서 조절합니다.
-
-이 설정은 글가드 설치에 포함되지 않습니다. 에이전트에게 아래 가이드로 적용을
-맡길 수 있습니다. 복구하려면 변경 전 값을 되돌리고, 원래 값이 없었다면 추가한
-설정 키만 제거합니다.
-
 ### 에이전트에게 설치 맡기기
 
 다음 요청을 저장소에 접근할 수 있는 코딩 에이전트에게 전달하세요.
 
 > 이 저장소의 AGENTS.md와 docs/agent-setup.md를 읽고 글가드를 권장 구성으로
 > 설치해 줘. 영어 ABC와 한글 글가드를 함께 쓰고, Caps Lock은 카라비너로 입력
-> 전환만 하게 해 줘. 영어 길게 누르기는 악센트 메뉴 대신 키 반복을 사용하고
-> 싶어. 기존 설정을 백업하고, 가능한 설치·설정을 진행한 뒤 직접 해야 하는
+> 전환만 하게 해 줘. 기존 설정을 백업하고, 가능한 설치·설정을 진행한 뒤
+> 직접 해야 하는
 > 인증·권한 승인·로그아웃 단계와 실제 검증 결과를 알려 줘.
 
 설치 절차·설정 보존·복구·검증 기준은 [에이전트 설치 가이드](docs/agent-setup.md)에
@@ -93,8 +80,7 @@ Karabiner가 실행 중이고 해당 키보드를 처리할 때 적용되며, �
 
 설정 근거: [Apple 입력 소스 안내](https://support.apple.com/guide/mac-help/write-in-another-language-on-mac-mchlp1406/mac),
 [Karabiner 반복 억제](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/repeat/),
-[수정키 처리](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/),
-[VSCodeVim의 macOS 키 반복 설정](https://github.com/VSCodeVim/Vim#mac).
+[수정키 처리](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/).
 
 ## 소스에서 빌드
 
@@ -107,26 +93,6 @@ Karabiner가 실행 중이고 해당 키보드를 처리할 때 적용되며, �
 기본 빌드는 빠른 로컬 검증용 debug입니다. 최적화 번들은
 `CONFIGURATION=release ./scripts/build-app.sh`로 만들 수 있습니다.
 빌드 결과는 `dist/GeulGuard.zip`에도 생성됩니다.
-
-### 서명·공증된 PKG 만들기
-
-공개 배포용 PKG는 Apple Developer ID 인증서와 `notarytool` 키체인 프로필이
-필요합니다. 릴리스 스크립트는 arm64와 x86_64를 포함한 Universal Binary를
-만들고, 앱과 설치 패키지를 각각 서명한 뒤 Apple 공증과 검증까지 수행합니다.
-
-```bash
-xcrun notarytool store-credentials geulguard-notary \
-  --apple-id "APPLE_ID" \
-  --team-id "TEAM_ID"
-
-DEVELOPER_ID_APPLICATION="Developer ID Application: NAME (TEAM_ID)" \
-DEVELOPER_ID_INSTALLER="Developer ID Installer: NAME (TEAM_ID)" \
-NOTARY_PROFILE="geulguard-notary" \
-./scripts/release-pkg.sh
-```
-
-인증 정보는 저장소나 환경 파일에 기록하지 않고 macOS 키체인에만 보관합니다.
-완성된 설치 파일은 `dist/GeulGuard.pkg`입니다.
 
 ### 0.1.x에서 업데이트
 
