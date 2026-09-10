@@ -1,0 +1,19 @@
+{
+  "description": "GeulGuard: Caps Lock으로 입력 소스 전환만",
+  "manipulators": [
+    {
+      "type": "basic",
+      "from": {
+        "key_code": "caps_lock",
+        "modifiers": { "mandatory": ["any"] }
+      },
+      "to": [
+        {
+          "key_code": "spacebar",
+          "modifiers": ["left_control"],
+          "repeat": false
+        }
+      ]
+    }
+  ]
+}

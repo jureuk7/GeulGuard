@@ -35,6 +35,67 @@ Binary를 `/Library/Input Methods`에 설치하므로 관리자 암호가 필요
 확인·변경할 수 있습니다. 글가드는 `Shift+Space`를 한/영 전환으로 가로채지 않습니다.
 ESC는 조합 중인 한글만 확정하며 입력 소스를 바꾸지 않습니다.
 
+## 권장 사용법: ABC + 글가드 + Karabiner
+
+영어는 **ABC**, 한글은 **글가드**, Caps Lock 전환은 **Karabiner-Elements**가
+담당하는 구성을 권장합니다. Karabiner는 선택 사항이며, 없어도 시스템 단축키로
+글가드를 사용할 수 있습니다.
+
+### 1. macOS 입력 소스 설정
+
+- 시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 `ABC`와 `글가드`를 추가합니다.
+  두 소스만 사용하면 전환 대상을 예측하기 쉽습니다. 다른 입력 소스가 필요하면
+  유지해도 되지만, ‘이전 입력 소스’가 항상 ABC/글가드인 것은 아닙니다.
+- 키보드 → 키보드 단축키 → 입력 소스에서 **이전 입력 소스 선택**을
+  `Control+Space`로 설정합니다. 아래 Karabiner 규칙은 이 단축키를 보냅니다.
+- Caps Lock의 ‘길게 눌러 대문자 고정’ 동작은 기본 입력 전환 옵션에 함께
+  포함됩니다. 대문자 고정 없이 전환만 하려면 아래 규칙을 사용합니다.
+
+### 2. Caps Lock을 입력 전환 전용으로 사용
+
+1. [Karabiner-Elements 공식 사이트](https://karabiner-elements.pqrs.org/)에서
+   설치하고 앱이 안내하는 macOS 권한·드라이버 설정을 완료합니다.
+2. Karabiner → Complex Modifications → Add your own rule을 엽니다.
+3. [Caps Lock 규칙 JSON](config/karabiner-caps-lock.json) 전체를 붙여 넣고 저장합니다.
+4. 규칙이 활성화되어 있고 Devices에서 사용하는 키보드가 활성화되어 있는지 확인합니다.
+
+규칙은 Caps Lock을 `Control+Space` 한 번으로 바꿉니다. `repeat: false`로
+길게 눌렀을 때의 반복 전환을 막으며, 다른 수정키와 함께 눌러도 입력 전환을
+보냅니다. 기존 Caps Lock 규칙과 충돌하면 어느 규칙을 유지할지 먼저 정하세요.
+Karabiner가 실행 중이고 해당 키보드를 처리할 때 적용되며, 로그인 전 화면에는
+이 설정이 그대로 적용된다고 가정하지 마세요. 대문자는 Shift로 입력합니다.
+
+### 3. 영어 키를 길게 누르면 악센트 메뉴가 뜰 때
+
+`a`를 누르고 있을 때 `à á â …`가 뜨는 것은 macOS의 길게 누르기 악센트 메뉴입니다.
+영문 키 반복을 원하면 `ApplePressAndHoldEnabled`를 `false`로 설정합니다.
+전체 앱에 적용하는 전역 설정과 특정 앱에만 적용하는 설정 중 범위를 선택하세요.
+앱별 값이 있으면 전역 설정과 함께 확인해야 합니다. 변경 뒤 해당 앱을 완전히
+종료하고 다시 실행하세요. 반영되지 않으면 작업을 저장한 뒤 로그아웃/로그인합니다.
+키 반복 속도와 반복 지연은 시스템 설정 → 키보드에서 조절합니다.
+
+이 설정은 글가드 설치에 포함되지 않습니다. 에이전트에게 아래 가이드로 적용을
+맡길 수 있습니다. 복구하려면 변경 전 값을 되돌리고, 원래 값이 없었다면 추가한
+설정 키만 제거합니다.
+
+### 에이전트에게 설치 맡기기
+
+다음 요청을 저장소에 접근할 수 있는 코딩 에이전트에게 전달하세요.
+
+> 이 저장소의 AGENTS.md와 docs/agent-setup.md를 읽고 글가드를 권장 구성으로
+> 설치해 줘. 영어 ABC와 한글 글가드를 함께 쓰고, Caps Lock은 카라비너로 입력
+> 전환만 하게 해 줘. 영어 길게 누르기는 악센트 메뉴 대신 키 반복을 사용하고
+> 싶어. 기존 설정을 백업하고, 가능한 설치·설정을 진행한 뒤 직접 해야 하는
+> 인증·권한 승인·로그아웃 단계와 실제 검증 결과를 알려 줘.
+
+설치 절차·설정 보존·복구·검증 기준은 [에이전트 설치 가이드](docs/agent-setup.md)에
+있습니다. 관리자 인증과 macOS 권한 승인은 사용자 조작이 필요할 수 있습니다.
+
+설정 근거: [Apple 입력 소스 안내](https://support.apple.com/guide/mac-help/write-in-another-language-on-mac-mchlp1406/mac),
+[Karabiner 반복 억제](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/repeat/),
+[수정키 처리](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/),
+[VSCodeVim의 macOS 키 반복 설정](https://github.com/VSCodeVim/Vim#mac).
+
 ## 소스에서 빌드
 
 요구 사항: macOS 14 이상, Xcode 16 이상.
@@ -94,7 +155,8 @@ NOTARY_PROFILE="geulguard-notary" \
 - 커서 이동·포커스 변경 전 강제 확정
 - Electron/Chromium 호환 marked text 표시
 
-한자 변환, 세벌식, Caps Lock 단독 전환, 앱별 모드 기억은 아직 포함하지 않습니다.
+한자 변환, 세벌식, 글가드 자체 Caps Lock 전환, 앱별 모드 기억은 포함하지 않습니다.
+Caps Lock 전환은 위 Karabiner 설정으로 구성할 수 있습니다.
 
 조사 근거와 원인/한계 분석은 [`docs/research.md`](docs/research.md)에 정리되어
 있습니다.
@@ -103,6 +165,8 @@ NOTARY_PROFILE="geulguard-notary" \
 
 키 입력은 현재 포커스된 앱으로 전달하기 위해 메모리에서만 처리합니다. 네트워크
 연결, 입력 기록, 접근성 권한을 사용하지 않습니다.
+선택 구성인 Karabiner-Elements는 키를 재매핑하기 위한 별도의 macOS 권한과
+드라이버를 사용합니다. 글가드 자체의 권한과 구분하세요.
 
 ## Contributing
 
