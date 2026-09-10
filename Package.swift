@@ -22,6 +22,7 @@ let package = Package(
                 .linkedFramework("SwiftUI")
             ]
         ),
+        .testTarget(name: "GeulGuardInputTests", dependencies: ["GeulGuardInput"]),
         .testTarget(
             name: "HangulCoreTests",
             dependencies: ["HangulCore"]

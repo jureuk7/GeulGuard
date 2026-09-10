@@ -5,28 +5,11 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
-    private var modeObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         configureStatusItem()
-        modeObserver = NotificationCenter.default.addObserver(
-            forName: .geulGuardModeDidChange,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor in
-                self?.refreshStatusTitle()
-            }
-        }
-
         if ProcessInfo.processInfo.arguments.contains("--settings") {
             showSettings()
-        }
-    }
-
-    func applicationWillTerminate(_ notification: Notification) {
-        if let modeObserver {
-            NotificationCenter.default.removeObserver(modeObserver)
         }
     }
 
@@ -46,30 +29,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
-    @objc private func toggleMode() {
-        InputModeStore.shared.toggle()
-    }
-
     @objc private func quit() {
         NSApp.terminate(nil)
     }
 
     private func configureStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        item.button?.toolTip = "글가드 입력 모드"
+        item.button?.toolTip = "글가드 · 한글 입력기"
 
         let menu = NSMenu()
-        menu.addItem(withTitle: "한/A 전환 (⇧Space)", action: #selector(toggleMode), keyEquivalent: "")
         menu.addItem(withTitle: "설정…", action: #selector(showSettings), keyEquivalent: ",")
         menu.addItem(.separator())
         menu.addItem(withTitle: "글가드 종료", action: #selector(quit), keyEquivalent: "q")
         item.menu = menu
         statusItem = item
-        refreshStatusTitle()
-    }
-
-    private func refreshStatusTitle() {
-        statusItem?.button?.title = InputModeStore.shared.mode.indicator
+        item.button?.title = "한"
     }
 }
 
@@ -90,14 +64,14 @@ private struct SettingsView: View {
 
             Divider()
 
-            feature("⇧Space", "입력 소스를 바꾸지 않고 한/영 모드를 즉시 전환합니다.")
+            feature("한/영 전환", "macOS 입력 메뉴나 시스템 단축키로 ABC ↔ 글가드를 전환합니다.")
             feature("커서 이동 안전", "방향키·Tab·Return·단축키 전에 조합 문자를 먼저 확정합니다.")
-            feature("ESC 안전", "조합을 확정한 뒤 영문 모드로 바꿔 Vim과 터미널 입력을 보호합니다.")
+            feature("ESC 확정", "조합 중인 한글만 확정합니다. 영어는 ABC 입력 소스를 사용하세요.")
             feature("개인정보 보호", "네트워크 연결, 키 입력 저장, 접근성 권한이 없습니다.")
 
             Spacer()
 
-            Text("시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 ‘글가드’를 추가한 뒤 선택하세요.")
+            Text("시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 ‘ABC’와 ‘글가드’를 추가하세요.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

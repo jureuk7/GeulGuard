@@ -88,6 +88,76 @@ struct HangulComposerTests {
         #expect(type("rkrrk", into: &composer) + composer.commit() == "각가")
     }
 
+    @Test("현대 한글의 복합 종성 13개를 모두 조합하고 분리한다")
+    func composesAndSplitsEveryComplexFinal() {
+        let cases = [
+            (keys: "rkrr", composed: "갂", withVowel: "각가"), // ㄲ
+            (keys: "rkrt", composed: "갃", withVowel: "각사"), // ㄳ
+            (keys: "rksw", composed: "갅", withVowel: "간자"), // ㄵ
+            (keys: "rksg", composed: "갆", withVowel: "간하"), // ㄶ
+            (keys: "rkfr", composed: "갉", withVowel: "갈가"), // ㄺ
+            (keys: "rkfa", composed: "갊", withVowel: "갈마"), // ㄻ
+            (keys: "rkfq", composed: "갋", withVowel: "갈바"), // ㄼ
+            (keys: "rkft", composed: "갌", withVowel: "갈사"), // ㄽ
+            (keys: "rkfx", composed: "갍", withVowel: "갈타"), // ㄾ
+            (keys: "rkfv", composed: "갎", withVowel: "갈파"), // ㄿ
+            (keys: "rkfg", composed: "갏", withVowel: "갈하"), // ㅀ
+            (keys: "rkqt", composed: "값", withVowel: "갑사"), // ㅄ
+            (keys: "rktt", composed: "갔", withVowel: "갓사")  // ㅆ
+        ]
+
+        for testCase in cases {
+            var composer = HangulComposer()
+            _ = type(testCase.keys, into: &composer)
+            #expect(composer.composingText == testCase.composed)
+
+            let committed = composer.input("k")?.committed ?? ""
+            #expect(committed + composer.commit() == testCase.withVowel)
+        }
+    }
+
+    @Test("복합 종성 13개를 Backspace로 한 자소씩 분해한다")
+    func deletesEveryComplexFinalByJamo() {
+        let cases = [
+            (keys: "rkrr", afterDeletion: "각"), // ㄲ → ㄱ
+            (keys: "rkrt", afterDeletion: "각"), // ㄳ → ㄱ
+            (keys: "rksw", afterDeletion: "간"), // ㄵ → ㄴ
+            (keys: "rksg", afterDeletion: "간"), // ㄶ → ㄴ
+            (keys: "rkfr", afterDeletion: "갈"), // ㄺ → ㄹ
+            (keys: "rkfa", afterDeletion: "갈"), // ㄻ → ㄹ
+            (keys: "rkfq", afterDeletion: "갈"), // ㄼ → ㄹ
+            (keys: "rkft", afterDeletion: "갈"), // ㄽ → ㄹ
+            (keys: "rkfx", afterDeletion: "갈"), // ㄾ → ㄹ
+            (keys: "rkfv", afterDeletion: "갈"), // ㄿ → ㄹ
+            (keys: "rkfg", afterDeletion: "갈"), // ㅀ → ㄹ
+            (keys: "rkqt", afterDeletion: "갑"), // ㅄ → ㅂ
+            (keys: "rktt", afterDeletion: "갓")  // ㅆ → ㅅ
+        ]
+
+        for testCase in cases {
+            var composer = HangulComposer()
+            _ = type(testCase.keys, into: &composer)
+            #expect(composer.backspace()?.composing == testCase.afterDeletion)
+        }
+    }
+
+    @Test("겹받침 뒤에 명시적 초성이 오면 받침을 유지한다")
+    func preservesComplexFinalBeforeExplicitInitial() {
+        let cases = [
+            (keys: "dkswdk", expected: "앉아"),
+            (keys: "aksgdk", expected: "많아"),
+            (keys: "dlfrdj", expected: "읽어"),
+            (keys: "qkfqdk", expected: "밟아"),
+            (keys: "tlfgdj", expected: "싫어"),
+            (keys: "djqtdj", expected: "없어")
+        ]
+
+        for testCase in cases {
+            var composer = HangulComposer()
+            #expect(type(testCase.keys, into: &composer) + composer.commit() == testCase.expected)
+        }
+    }
+
     @Test("모음 뒤 자음을 이전 음절로 재배열하지 않는다")
     func preservesJamoOrder() {
         var composer = HangulComposer()

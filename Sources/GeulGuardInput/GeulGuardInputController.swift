@@ -10,24 +10,13 @@ final class GeulGuardInputController: IMKInputController {
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         guard let event, let client = sender as? IMKTextInput else { return false }
 
-        if isModeToggle(event) {
+        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty else {
             commitComposition(to: client)
-            MainActor.assumeIsolated {
-                InputModeStore.shared.toggle()
-            }
-            return true
-        }
-
-        let mode = MainActor.assumeIsolated { InputModeStore.shared.mode }
-        if mode == .english {
             return false
         }
 
-        if event.keyCode == 53 { // Escape: preserve text, then make Vim/terminal safe.
+        if event.keyCode == 53 { // Escape commits Hangul; macOS owns input source switching.
             commitComposition(to: client)
-            MainActor.assumeIsolated {
-                InputModeStore.shared.switchToEnglish()
-            }
             return false
         }
 
@@ -37,8 +26,7 @@ final class GeulGuardInputController: IMKInputController {
             return true
         }
 
-        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty,
-              let character = hangulKey(from: event) else {
+        guard let character = hangulKey(from: event) else {
             commitComposition(to: client)
             return false
         }
@@ -93,11 +81,6 @@ final class GeulGuardInputController: IMKInputController {
 
     private func commitComposition(to client: IMKTextInput) {
         let committed = composer.commit()
-        client.setMarkedText(
-            NSAttributedString(string: ""),
-            selectionRange: NSRange(location: 0, length: 0),
-            replacementRange: noReplacement
-        )
         guard !committed.isEmpty else { return }
         client.insertText(committed, replacementRange: noReplacement)
     }
@@ -129,13 +112,5 @@ final class GeulGuardInputController: IMKInputController {
             return variant
         }
         return base
-    }
-
-    private func isModeToggle(_ event: NSEvent) -> Bool {
-        event.keyCode == 49
-            && event.modifierFlags.contains(.shift)
-            && !event.modifierFlags.contains(.command)
-            && !event.modifierFlags.contains(.control)
-            && !event.modifierFlags.contains(.option)
     }
 }
