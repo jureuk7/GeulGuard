@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@vanilla-extract/css": "^1.21.2",
+		"@vercel/analytics": "^2.0.1",
 		"ky": "^2.1.0",
 		"lucide-react": "^1.44.0",
 		"motion": "^13.2.0",

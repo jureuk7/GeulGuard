@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "../styles/index.css";
 import localFont from "next/font/local";
 import { DevTools } from "../components/site/dev-tools";
+import { Analytics } from "@vercel/analytics/next";
 
 const pretendard = localFont({
 	src: "../public/fonts/PretendardVariable.woff2",
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
 			<body className={pretendard.variable}>
 				{process.env.NODE_ENV === "development" && <DevTools />}
 				{children}
+				<Analytics />
 			</body>
 		</html>
 	);
