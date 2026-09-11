@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>글가드</title>
+  <rect width="32" height="32" rx="8" fill="#254acb"/>
+  <path fill="#fff" d="M8 8h3v6h7V8h3v16h-3v-7h-7v7H8V8Zm15 0h3v16h-3V8Z"/>
+</svg>

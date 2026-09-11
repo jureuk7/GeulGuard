@@ -1,0 +1,42 @@
+{
+	"name": "geulguard-landing",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome lint .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"format:check": "biome format .",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test",
+		"review:react": "react-doctor . --yes --no-score --no-supply-chain"
+	},
+	"dependencies": {
+		"@vanilla-extract/css": "^1.21.2",
+		"ky": "^2.1.0",
+		"lucide-react": "^1.44.0",
+		"motion": "^13.2.0",
+		"next": "latest",
+		"react": "latest",
+		"react-dom": "latest",
+		"react-markdown": "^10.1.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.13",
+		"@happy-dom/global-registrator": "^20.14.3",
+		"@testing-library/react": "^16.3.3",
+		"@types/bun": "^1.4.2",
+		"@types/node": "latest",
+		"@types/react": "latest",
+		"@types/react-dom": "latest",
+		"@vanilla-extract/next-plugin": "^2.5.2",
+		"react-doctor": "^0.9.13",
+		"react-grab": "^0.2.0",
+		"react-scan": "^0.5.7",
+		"typescript": "latest"
+	},
+	"packageManager": "pnpm@10.34.0+sha512.8736169c56fdb6e26afb5d7e2bd5f4c99cc299620d8bdc288cb354e6dd0936bd4ea62276d1a6b2de4b6e971a00a530e0e08bbeeda63da5d820118d3d7e21ff69"
+}

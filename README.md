@@ -1,3 +1,5 @@
+![쓰던 한글, 끝까지.](docs/assets/geulguard-readme-hero.png)
+
 # GeulGuard · 글가드
 
 **Keep every Korean character.**
@@ -82,46 +84,16 @@ Karabiner가 실행 중이고 해당 키보드를 처리할 때 적용되며, �
 [Karabiner 반복 억제](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/repeat/),
 [수정키 처리](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/).
 
-## 소스에서 빌드
-
-요구 사항: macOS 14 이상, Xcode 16 이상.
-
-```bash
-./scripts/install.sh
-```
-
-기본 빌드는 빠른 로컬 검증용 debug입니다. 최적화 번들은
-`CONFIGURATION=release ./scripts/build-app.sh`로 만들 수 있습니다.
-빌드 결과는 `dist/GeulGuard.zip`에도 생성됩니다.
-
-### 0.1.x에서 업데이트
-
-최신 PKG를 설치하면 기존 앱을 교체합니다. 입력 소스 목록에 이전 글가드가 남아
-있다면 시스템 설정에서 제거한 뒤 새 `글가드`를 추가하세요.
-
-## 주요 개선
-
-- Shift가 눌린 채 이어서 입력해도 모음이 영문으로 새지 않습니다.
-- Electron/Chromium 기반 앱의 조합 중 텍스트 표시와 확정 동작을 개선했습니다.
-- 시스템 언어에 맞는 입력 소스 이름과 작은 메뉴 막대 아이콘을 제공합니다.
-
-## 테스트
-
-```bash
-./scripts/test.sh
-```
-
-터미널·Electron의 실제 검증 범위와 미완료 항목은 [호환성 검증 기록](docs/compatibility.md)에 있습니다.
-
 ## 현재 범위
 
-- 표준 두벌식 및 복합 모음/겹받침
+- 현재는 표준 두벌식 및 복합 모음/겹받침 지원
 - 조합 단위 Backspace
 - macOS 기본 ABC 입력 소스와 함께 사용
 - 커서 이동·포커스 변경 전 강제 확정
 - Electron/Chromium 호환 marked text 표시
 
-한자 변환, 세벌식, 글가드 자체 Caps Lock 전환, 앱별 모드 기억은 포함하지 않습니다.
+두벌식 외 한글 자판 배열도 지원할 예정입니다. 한자 변환, 글가드 자체 Caps Lock 전환,
+앱별 모드 기억은 현재 포함하지 않습니다.
 Caps Lock 전환은 위 Karabiner 설정으로 구성할 수 있습니다.
 
 조사 근거와 원인/한계 분석은 [`docs/research.md`](docs/research.md)에 정리되어
