@@ -43,7 +43,7 @@
 - 캡처 /tmp/geulguard-landing-qa/motion-*.png.
 
 ## 배포 기록·설정 팝업
-- GitHub CHANGELOG.md 실제 요청 후 0.4.0~0.1.0 버전 내용 렌더링 확인.
+- GitHub CHANGELOG.md 실제 요청 후 0.5.0~0.1.0 버전 내용 렌더링 확인.
 - Next 빌드 출력의 ISR revalidate=1h 확인.
 - 카라비너 코드 프리뷰 및 복사 성공 상태 확인.
 - ESC 닫기 후 배포 기록 버튼으로 focus 복귀 확인.
