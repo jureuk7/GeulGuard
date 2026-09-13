@@ -31,6 +31,7 @@ final class GeulGuardInputController: IMKInputController {
             return false
         }
 
+        composer.combinesRepeatedInitials = GeulGuardPreferences.combinesRepeatedInitials
         guard let update = composer.input(character) else {
             // Never let navigation, focus-changing keys, shortcuts, or
             // punctuation cancel marked Hangul. Commit it synchronously first.

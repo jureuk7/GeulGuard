@@ -11,6 +11,16 @@ struct HangulComposerTests {
         #expect(output + composer.commit() == "안녕")
     }
 
+    @Test("연속 자음의 쌍자음 조합을 끌 수 있다")
+    func canDisableRepeatedInitialCombination() {
+        var enabled = HangulComposer(combinesRepeatedInitials: true)
+        #expect(type("rrrrr", into: &enabled) + enabled.commit() == "ㄲㄲㄱ")
+
+        var disabled = HangulComposer(combinesRepeatedInitials: false)
+        #expect(type("rrrrr", into: &disabled) + disabled.commit() == "ㄱㄱㄱㄱㄱ")
+        #expect(type("R", into: &disabled) + disabled.commit() == "ㄲ")
+    }
+
     @Test("받침을 다음 음절 초성으로 이동한다")
     func movesFinalToNextSyllable() {
         var composer = HangulComposer()

@@ -16,12 +16,16 @@ public struct CompositionUpdate: Equatable, Sendable {
 /// InputMethodKit clients must receive those two streams in that order or a
 /// focus/navigation event can cancel the last visible Hangul syllable.
 public struct HangulComposer: Sendable {
+    public var combinesRepeatedInitials: Bool
+
     private var initial: Int?
     private var medial: Int?
     private var final: Int?
     private var finalIsDirectDouble = false
 
-    public init() {}
+    public init(combinesRepeatedInitials: Bool = true) {
+        self.combinesRepeatedInitials = combinesRepeatedInitials
+    }
 
     public var composingText: String {
         render(initial: initial, medial: medial, final: final)
@@ -85,7 +89,8 @@ public struct HangulComposer: Sendable {
         }
 
         guard medial != nil else {
-            if let doubled = Self.combinedInitials[Pair(currentInitial, consonant)] {
+            if combinesRepeatedInitials,
+               let doubled = Self.combinedInitials[Pair(currentInitial, consonant)] {
                 initial = doubled
                 return CompositionUpdate(composing: composingText)
             }

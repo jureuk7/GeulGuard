@@ -54,6 +54,31 @@ final class InputControllerTests: XCTestCase {
     }
 
     @MainActor
+    func testRepeatedInitialSettingAppliesToActiveInputSession() {
+        let defaults = UserDefaults.standard
+        let previousValue = defaults.object(forKey: GeulGuardPreferences.combineRepeatedInitialsKey)
+        defer {
+            if let previousValue {
+                defaults.set(previousValue, forKey: GeulGuardPreferences.combineRepeatedInitialsKey)
+            } else {
+                defaults.removeObject(forKey: GeulGuardPreferences.combineRepeatedInitialsKey)
+            }
+        }
+
+        defaults.set(false, forKey: GeulGuardPreferences.combineRepeatedInitialsKey)
+        let client = TextClient()
+        let controller = GeulGuardInputController(server: nil, delegate: nil, client: nil)!
+        XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+        XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+
+        defaults.set(true, forKey: GeulGuardPreferences.combineRepeatedInitialsKey)
+        XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+        controller.commitComposition(client)
+
+        XCTAssertEqual(client.string, "ㄱㄲ")
+    }
+
+    @MainActor
     func testModifiedBackspaceCommitsHangulAndPassesShortcutToClient() {
         for modifier: NSEvent.ModifierFlags in [.control, .option, .command] {
             let client = TextClient()

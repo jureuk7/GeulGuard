@@ -18,7 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let rootView = SettingsView()
             let window = NSWindow(contentViewController: NSHostingController(rootView: rootView))
             window.title = "글가드 설정"
-            window.setContentSize(NSSize(width: 520, height: 460))
+            window.setContentSize(NSSize(width: 520, height: 540))
             window.styleMask = [.titled, .closable, .miniaturizable]
             window.isReleasedWhenClosed = false
             settingsWindow = window
@@ -48,6 +48,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 private struct SettingsView: View {
+    @AppStorage(GeulGuardPreferences.combineRepeatedInitialsKey)
+    private var combineRepeatedInitials = true
+
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             HStack(spacing: 14) {
@@ -69,15 +72,25 @@ private struct SettingsView: View {
             feature("ESC 확정", "조합 중인 한글만 확정합니다. 영어는 ABC 입력 소스를 사용하세요.")
             feature("개인정보 보호", "네트워크 연결, 키 입력 저장, 접근성 권한이 없습니다.")
 
+            Divider()
+
+            VStack(alignment: .leading, spacing: 6) {
+                Toggle("연속 자음을 쌍자음으로 조합", isOn: $combineRepeatedInitials)
+                    .font(.headline)
+                Text(combineRepeatedInitials ? "ㄱㄱ을 ㄲ으로 조합합니다." : "ㄱㄱ을 각각 입력합니다.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
             Spacer()
 
-            Text("시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 ‘ABC’와 ‘글가드’를 추가하세요.")
+            Text("시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 ‘ABC’와 ‘글가드 두벌식’을 추가하세요.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(28)
-        .frame(minWidth: 520, minHeight: 460)
+        .frame(minWidth: 520, minHeight: 540)
     }
 
     private func feature(_ title: String, _ description: String) -> some View {
