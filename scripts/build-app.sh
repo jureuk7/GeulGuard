@@ -63,7 +63,7 @@ for localization in ko en; do
     "$app_path/Contents/Resources/${localization}.lproj/InfoPlist.strings"
 done
 swift "$project_root/scripts/make-icon.swift" \
-  "$app_path/Contents/Resources/GeulGuard.tiff"
+  "$app_path/Contents/Resources/GeulGuardMenu.tiff"
 COPYFILE_DISABLE=1 cp \
   "$project_root/Resources/GeulGuard.icns" \
   "$app_path/Contents/Resources/GeulGuard.icns"

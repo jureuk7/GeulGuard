@@ -32,16 +32,19 @@
                 <string>dev.jureuk.inputmethod.GeulGuard</string>
                 <key>TISIntendedLanguage</key>
                 <string>ko</string>
-                <key>tsInputModeAlternateMenuIconFileKey</key>
-                <string>GeulGuard.tiff</string>
+                <key>TISIconLabels</key>
+                <dict>
+                    <key>Primary</key>
+                    <string>한</string>
+                </dict>
                 <key>tsInputModeDefaultStateKey</key>
                 <true/>
                 <key>tsInputModeIsVisibleKey</key>
                 <true/>
                 <key>tsInputModeMenuIconFileKey</key>
-                <string>GeulGuard.tiff</string>
+                <string>GeulGuardMenu.tiff</string>
                 <key>tsInputModePaletteIconFileKey</key>
-                <string>GeulGuard.tiff</string>
+                <string>GeulGuardMenu.tiff</string>
                 <key>tsInputModePrimaryInScriptKey</key>
                 <true/>
                 <key>tsInputModeScriptKey</key>
@@ -65,6 +68,8 @@
     <string>NSApplication</string>
     <key>TISInputSourceID</key>
     <string>dev.jureuk.inputmethod.GeulGuard</string>
+    <key>TISIconIsTemplate</key>
+    <true/>
     <key>TISIntendedLanguage</key>
     <string>ko</string>
     <key>tsInputMethodCharacterRepertoireKey</key>
@@ -72,6 +77,6 @@
         <string>Hang</string>
     </array>
     <key>tsInputMethodIconFileKey</key>
-    <string>GeulGuard.tiff</string>
+    <string>GeulGuardMenu.tiff</string>
 </dict>
 </plist>

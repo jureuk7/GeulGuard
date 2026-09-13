@@ -34,8 +34,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func configureStatusItem() {
-        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.toolTip = "글가드 · 한글 입력기"
+        if let imageURL = Bundle.main.url(forResource: "GeulGuardMenu", withExtension: "tiff"),
+            let image = NSImage(contentsOf: imageURL)
+        {
+            image.isTemplate = true
+            image.size = NSSize(width: 22, height: 16)
+            item.button?.image = image
+            item.button?.imagePosition = .imageOnly
+        }
 
         let menu = NSMenu()
         menu.addItem(withTitle: "설정…", action: #selector(showSettings), keyEquivalent: ",")
@@ -43,7 +51,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "글가드 종료", action: #selector(quit), keyEquivalent: "q")
         item.menu = menu
         statusItem = item
-        item.button?.title = "한"
     }
 }
 

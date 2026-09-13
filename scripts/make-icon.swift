@@ -13,13 +13,14 @@ let workDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
 try FileManager.default.createDirectory(at: workDirectory, withIntermediateDirectories: true)
 defer { try? FileManager.default.removeItem(at: workDirectory) }
 
-// Menu-bar input-source icons must be tiny (16pt), like Apple's KoreanIM TIFFs.
-// A large app-style badge is rendered at full size and breaks the input menu.
-func renderMenuIcon(pixels: Int) -> NSBitmapImageRep {
+let menuIconSize = NSSize(width: 22, height: 16)
+let menuIconCornerRadius: CGFloat = 5
+
+func renderMenuIcon(scale: Int) -> NSBitmapImageRep {
     guard let rep = NSBitmapImageRep(
         bitmapDataPlanes: nil,
-        pixelsWide: pixels,
-        pixelsHigh: pixels,
+        pixelsWide: Int(menuIconSize.width) * scale,
+        pixelsHigh: Int(menuIconSize.height) * scale,
         bitsPerSample: 8,
         samplesPerPixel: 4,
         hasAlpha: true,
@@ -31,15 +32,14 @@ func renderMenuIcon(pixels: Int) -> NSBitmapImageRep {
         fatalError("failed to allocate bitmap")
     }
 
-    // Logical size stays 16pt so the menu treats this as a menu glyph, not an app icon.
-    rep.size = NSSize(width: 16, height: 16)
+    rep.size = menuIconSize
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 
     let badge = NSBezierPath(
-        roundedRect: NSRect(x: 0.5, y: 0.5, width: 15, height: 15),
-        xRadius: 3.5,
-        yRadius: 3.5
+        roundedRect: NSRect(origin: .zero, size: menuIconSize),
+        xRadius: menuIconCornerRadius,
+        yRadius: menuIconCornerRadius
     )
     NSColor.black.setFill()
     badge.fill()
@@ -47,19 +47,18 @@ func renderMenuIcon(pixels: Int) -> NSBitmapImageRep {
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
     let attributes: [NSAttributedString.Key: Any] = [
-        .font: NSFont.systemFont(ofSize: 9, weight: .bold),
-        .foregroundColor: NSColor.white,
+        .font: NSFont.systemFont(ofSize: 10.5, weight: .semibold),
+        .foregroundColor: NSColor.black,
         .paragraphStyle: paragraph
     ]
 
-    // Match native input-source icons: a compact language indicator rather
-    // than a branded app glyph.
     let text = NSString(string: "한")
     let textSize = text.size(withAttributes: attributes)
     let origin = NSPoint(
-        x: (16 - textSize.width) / 2,
-        y: (16 - textSize.height) / 2
+        x: (menuIconSize.width - textSize.width) / 2,
+        y: (menuIconSize.height - textSize.height) / 2
     )
+    NSGraphicsContext.current?.compositingOperation = .clear
     text.draw(at: origin, withAttributes: attributes)
 
     NSGraphicsContext.restoreGraphicsState()
@@ -75,8 +74,8 @@ func writePNG(_ rep: NSBitmapImageRep, to url: URL) throws {
 
 let oneX = workDirectory.appendingPathComponent("GeulGuard.png")
 let twoX = workDirectory.appendingPathComponent("GeulGuard@2x.png")
-try writePNG(renderMenuIcon(pixels: 16), to: oneX)
-try writePNG(renderMenuIcon(pixels: 32), to: twoX)
+try writePNG(renderMenuIcon(scale: 1), to: oneX)
+try writePNG(renderMenuIcon(scale: 2), to: twoX)
 
 let process = Process()
 process.executableURL = URL(fileURLWithPath: "/usr/bin/tiffutil")
