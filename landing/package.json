@@ -15,6 +15,7 @@
 		"review:react": "react-doctor . --yes --no-score --no-supply-chain"
 	},
 	"dependencies": {
+		"@icons-pack/react-simple-icons": "^13.15.1",
 		"@vanilla-extract/css": "^1.21.2",
 		"@vercel/analytics": "^2.0.1",
 		"ky": "^2.1.0",

@@ -98,6 +98,7 @@ export const classScopes = {
 	padFooter: style({}, "pad-footer"),
 	padToolbar: style({}, "pad-toolbar"),
 	platform: style({}, "platform"),
+	platformDownload: style({}, "platform-download"),
 	primary: style({}, "primary"),
 	promptText: style({}, "prompt-text"),
 	releaseLine: style({}, "release-line"),

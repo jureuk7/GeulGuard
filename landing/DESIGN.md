@@ -42,6 +42,10 @@ Link의 primary/secondary 두 역할, 실제 textarea, 상태 텍스트, 네이�
 설치 파일은 GitHub 최신 릴리스로 연결. 실제 macOS IME는 웹에 포함되지 않는다.
 터미널 전체 검증 완료, 완전 자동 설치, 누락률 0%를 주장하지 않는다.
 
+다운로드 CTA는 브라우저의 운영체제를 확인한다. macOS에서는 Apple 로고와 설치 파일
+링크를 표시하고, Windows·Linux·ChromeOS·모바일에서는 해당 플랫폼 로고와 `macOS
+전용` 문구를 포함한 비활성 버튼으로 지원 범위를 바로 알린다.
+
 ## 참고 원문
 - https://impeccable.style/docs/layout : 주요 작업의 위계와 화면 너비별 재배치.
 - https://github.com/epoko77-ai/im-not-ai/blob/main/codex/skills/humanize-korean/SKILL.md : 번역투, 추상적 수식, 반복 문장 제거.

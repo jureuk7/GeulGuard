@@ -204,6 +204,19 @@ const heroActionsFragment2 = style({
 	},
 });
 
+const platformDownloadFragment1 = style({
+	cursor: "not-allowed",
+	opacity: "0.72",
+	selectors: {
+		"&:hover": {
+			background: `${tokens.color.primaryAction}`,
+		},
+		"&:active": {
+			transform: "none",
+		},
+	},
+});
+
 globalStyle(
 	`${classScopes.heroActions} ${classScopes.button},
 	${classScopes.heroActions} ${classScopes.textLink}`,
@@ -224,6 +237,7 @@ export const styleFragments = {
 	heroCopy: [heroCopyFragment1],
 	heroDescription: [heroDescriptionFragment1, heroDescriptionFragment2],
 	heroActions: [heroActionsFragment1, heroActionsFragment2],
+	platformDownload: [platformDownloadFragment1],
 	heroTyped: [heroTypedFragment1],
 	heroTypedSpace: [heroTypedSpaceFragment1],
 	heroTypedComposition: [heroTypedCompositionFragment1],
