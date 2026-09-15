@@ -20,6 +20,17 @@ XPC 서비스, Autoupdate, Updater.app, 프레임워크, 앱 순서로 서명한
 | `GEUL_GUARD_UPDATE_FEED_URL` | `SUFeedURL`에 기록할 고정 HTTPS appcast 주소 |
 | `GEUL_GUARD_UPDATE_PUBLIC_KEY` | `SUPublicEDKey`에 기록할 Base64 Ed25519 공개키, 디코딩 후 32바이트 |
 
+공식 배포용 공개 설정은 `config/updates.env`에 보관한다. 저장소 루트에서
+다음 명령을 실행한 같은 터미널에서 빌드·릴리스 스크립트를 실행한다.
+
+```sh
+source config/updates.env
+```
+
+피드는 `https://geulguard.jureuk.dev/.well-known/appcast.xml`이다.
+이 파일에는 공개키와 공개 URL만 포함하며, 개인키·공증 자격 증명은 넣지 않는다.
+개발 빌드에 자동 적용하지 않으며 명시적으로 불러온 경우에만 적용한다.
+
 둘 다 생략하면 업데이트 서버가 설정되지 않은 개발 빌드다. 하나만 지정하거나
 유효하지 않은 값을 지정하면 빌드가 실패한다. 피드 URL에는 사용자명·암호를
 넣을 수 없다. 비공개 키를 환경변수나 저장소에 넣지 않는다.
