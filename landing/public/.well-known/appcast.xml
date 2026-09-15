@@ -2,8 +2,14 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
     <title>GeulGuard Updates</title>
-    <link>https://github.com/jureuk7/GeulGuard</link>
-    <description>GeulGuard release updates</description>
-    <language>ko</language>
+    <link>https://geulguard.jureuk.dev/.well-known/appcast.xml</link>
+    <description>글가드 업데이트</description>
+    <item>
+      <title>GeulGuard 0.6.0</title>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>0.6.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/jureuk7/GeulGuard/releases/download/v0.6.0/GeulGuard.pkg" length="1633246" type="application/octet-stream" sparkle:installationType="package" sparkle:edSignature="NYDq+LBTT34dL3ba5pLlyY71s0Yi1BKvxvAOJzlim74114bHP2lAcIIOhgG6Dl4wNAfyTxndduRkR8TjBvYHAw==" />
+    </item>
   </channel>
 </rss>
