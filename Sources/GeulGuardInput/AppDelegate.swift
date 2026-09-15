@@ -2,12 +2,17 @@ import AppKit
 import SwiftUI
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
+    private lazy var updates = UpdateController()
     private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        _ = updates
         configureStatusItem()
+        Task { @MainActor in
+            updates.presentPostUpdateLogoutIfNeeded()
+        }
         if ProcessInfo.processInfo.arguments.contains("--settings") {
             showSettings()
         }
@@ -15,10 +20,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showSettings() {
         if settingsWindow == nil {
-            let rootView = SettingsView()
+            let rootView = SettingsView(updates: updates)
             let window = NSWindow(contentViewController: NSHostingController(rootView: rootView))
             window.title = "글가드 설정"
-            window.setContentSize(NSSize(width: 520, height: 540))
+            window.setContentSize(NSSize(width: 520, height: 680))
             window.styleMask = [.titled, .closable, .miniaturizable]
             window.isReleasedWhenClosed = false
             settingsWindow = window
@@ -29,8 +34,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        updates.confirmTermination()
+    }
+
+    @objc private func checkForUpdates() {
+        updates.checkForUpdates()
+    }
+
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        menuItem.action != #selector(checkForUpdates) || updates.canCheckForUpdates
     }
 
     private func configureStatusItem() {
@@ -47,6 +64,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let menu = NSMenu()
         menu.addItem(withTitle: "설정…", action: #selector(showSettings), keyEquivalent: ",")
+        let updateItem = menu.addItem(withTitle: "업데이트 확인…", action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "글가드 종료", action: #selector(quit), keyEquivalent: "q")
         item.menu = menu
@@ -55,6 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 private struct SettingsView: View {
+    @ObservedObject var updates: UpdateController
     @AppStorage(GeulGuardPreferences.combineRepeatedInitialsKey)
     private var combineRepeatedInitials = true
 
@@ -77,7 +97,7 @@ private struct SettingsView: View {
             feature("한/영 전환", "macOS 입력 메뉴나 시스템 단축키로 ABC ↔ 글가드를 전환합니다.")
             feature("커서 이동 안전", "방향키·Tab·Return·단축키 전에 조합 문자를 먼저 확정합니다.")
             feature("ESC 확정", "조합 중인 한글만 확정합니다. 영어는 ABC 입력 소스를 사용하세요.")
-            feature("개인정보 보호", "네트워크 연결, 키 입력 저장, 접근성 권한이 없습니다.")
+            feature("개인정보 보호", "업데이트 확인·다운로드에만 네트워크를 사용하며 키 입력을 저장하거나 전송하지 않습니다.")
 
             Divider()
 
@@ -89,7 +109,23 @@ private struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("업데이트").font(.headline)
+                Toggle("앱 시작 시 업데이트 확인", isOn: Binding(
+                    get: { updates.checksOnLaunch },
+                    set: { updates.setChecksOnLaunch($0) }
+                ))
+                .disabled(!updates.isAvailable)
+                Text(updates.status)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             Spacer()
+
 
             Text("시스템 설정 → 키보드 → 텍스트 입력 → 편집에서 ‘ABC’와 ‘글가드 두벌식’을 추가하세요.")
                 .font(.callout)
@@ -97,7 +133,7 @@ private struct SettingsView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(28)
-        .frame(minWidth: 520, minHeight: 540)
+        .frame(minWidth: 520, minHeight: 680)
     }
 
     private func feature(_ title: String, _ description: String) -> some View {
