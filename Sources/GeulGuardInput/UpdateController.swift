@@ -34,12 +34,18 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     @Published private(set) var canCheckForUpdates = false
     @Published private(set) var checksOnLaunch = GeulGuardPreferences.checksForUpdatesOnLaunch
     @Published private(set) var status = "이 빌드에서는 업데이트를 사용할 수 없습니다."
+    private let logoutPrompt = UpdateLogoutPrompt()
+    private var shouldOfferLogout = false
+    private var installingVersion: String?
     private var controller: SPUStandardUpdaterController?
     private var observations: [NSKeyValueObservation] = []
     private(set) var isInstallingUpdate = false
 
     override init() {
         super.init()
+        if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+            shouldOfferLogout = logoutPrompt.consumeInstalledUpdate(currentVersion: version)
+        }
         guard UpdateConfiguration.isValid(Bundle.main.infoDictionary ?? [:]) else { return }
         let controller = SPUStandardUpdaterController(startingUpdater: false, updaterDelegate: self, userDriverDelegate: nil)
         self.controller = controller
@@ -62,6 +68,12 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
         } catch {
             status = "업데이트를 시작하지 못했습니다. 공식 배포본을 다시 설치해 주세요."
         }
+    }
+
+    func presentPostUpdateLogoutIfNeeded() {
+        guard shouldOfferLogout else { return }
+        shouldOfferLogout = false
+        logoutPrompt.present()
     }
 
     private func refreshState() {
@@ -91,11 +103,13 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     func allowedSystemProfileKeys(for updater: SPUUpdater) -> [String]? { [] }
 
     func updater(_ updater: SPUUpdater, willInstallUpdate item: SUAppcastItem) {
+        installingVersion = item.versionString
         isInstallingUpdate = true
     }
 
     func updater(_ updater: SPUUpdater, willInstallUpdateOnQuit item: SUAppcastItem,
                  immediateInstallationBlock immediateInstallHandler: @escaping () -> Void) -> Bool {
+        installingVersion = item.versionString
         isInstallingUpdate = true
         return false
     }
@@ -103,12 +117,15 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     func updater(_ updater: SPUUpdater, userDidMake choice: SPUUserUpdateChoice,
                  forUpdate updateItem: SUAppcastItem, state: SPUUserUpdateState) {
         if state.stage == .installing {
+            installingVersion = updateItem.versionString
             isInstallingUpdate = true
         }
     }
 
     func updater(_ updater: SPUUpdater, didAbortWithError error: Error) {
         isInstallingUpdate = false
+        installingVersion = nil
+        logoutPrompt.cancelInstallation()
     }
 
     func confirmTermination() -> NSApplication.TerminateReply {
@@ -130,6 +147,7 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
             blocked.runModal()
             return .terminateCancel
         }
+        if let installingVersion { logoutPrompt.recordInstallation(version: installingVersion) }
         return .terminateNow
     }
 

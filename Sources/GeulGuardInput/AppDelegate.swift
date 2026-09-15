@@ -10,6 +10,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     func applicationDidFinishLaunching(_ notification: Notification) {
         _ = updates
         configureStatusItem()
+        Task { @MainActor in
+            updates.presentPostUpdateLogoutIfNeeded()
+        }
         if ProcessInfo.processInfo.arguments.contains("--settings") {
             showSettings()
         }
