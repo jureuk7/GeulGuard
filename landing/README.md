@@ -25,7 +25,7 @@ pnpm start --port 43187
 토큰으로 정의해 사용합니다.
 
 사용 중인 포트가 있으면 다른 포트를 지정하세요. Swift 앱의 빌드와 독립적으로 실행합니다.
-다운로드는 공식 GitHub 최신 릴리스의 PKG로 연결합니다. 도메인 연결과 공개 배포는 아직 하지 않았습니다.
+다운로드는 공식 GitHub 최신 릴리스의 PKG로 연결합니다. 공개 사이트는 https://geulguard.jureuk.dev 입니다.
 
 ## 구현 범위
 
@@ -55,3 +55,32 @@ Next.js ISR로 1시간이 지난 뒤 들어오는 요청에서 갱신하며, Git
 원문 링크를 제공합니다. 새 변경을 즉시 반영하려면 다시 빌드·배포하세요.
 카라비너 프리뷰는 상위 저장소의 `config/karabiner-caps-lock.json`을 직접 사용합니다.
 배포 시 `landing/`과 상위 `config/`를 함께 포함하세요.
+
+## Sparkle 업데이트 피드
+
+`public/.well-known/appcast.xml`은 `/.well-known/appcast.xml`에서 제공하는
+공개 업데이트 피드입니다. 로그인이나 API 키 없이 HTTPS로 접근할 수 있는
+고정 도메인에 배포하고, macOS 앱 빌드의 `GEUL_GUARD_UPDATE_FEED_URL`을
+해당 주소로 설정합니다. `.well-known` 디렉터리도 배포 산출물에 포함해야 합니다.
+
+운영 피드 주소는 `https://geulguard.jureuk.dev/.well-known/appcast.xml`입니다.
+앱을 빌드하는 터미널에서 `GEUL_GUARD_UPDATE_FEED_URL`을 이 값으로 지정합니다.
+
+초기 피드는 배포 항목이 없는 RSS입니다. 실제 서명된 업데이트를 게시하기 전까지
+새 버전을 안내하지 않습니다. 개인키는 웹 서버나 `public/`에 넣지 않습니다.
+
+새 버전 게시 순서:
+
+1. 자동 업데이트 PR의 `scripts/release-pkg.sh`로 서명·공증된 PKG와
+   서명이 검증된 `dist/appcast.xml`을 생성합니다.
+2. 최종 PKG를 공식 GitHub Release의 버전별 주소에 게시하고 다운로드를 확인합니다.
+3. 생성된 XML로 `landing/public/.well-known/appcast.xml`을 교체합니다.
+   이전 macOS용 배포 항목을 유지해야 하면 기존 호환 항목도 보존합니다.
+4. 변경을 검토·커밋하고 Next.js 앱을 다시 배포합니다. 피드의 버전·URL·서명을
+   임의로 작성하거나 이미 공개한 버전의 PKG를 교체하지 않습니다.
+5. 공개 피드 주소가 HTTP 200과 XML 본문을 반환하는지 확인한 뒤 실제 앱에서
+   업데이트를 검증합니다. 인증 리다이렉트나 HTML 페이지가 반환되면 안 됩니다.
+
+Next.js의 `public` 파일은 기본적으로 `Cache-Control: public, max-age=0`으로
+제공됩니다. CDN에도 장기 캐시를 추가하지 말고, 게시 후 실제 응답을 확인하세요.
+피드 내용 변경에는 재배포가 필요합니다. 앱에 설정한 피드 주소는 유지합니다.
