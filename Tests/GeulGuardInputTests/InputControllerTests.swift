@@ -5,6 +5,28 @@ import XCTest
 
 final class InputControllerTests: XCTestCase {
     @MainActor
+    func testUpdateWaitsForEveryCompositionToFinish() {
+        let firstClient = TextClient()
+        let secondClient = TextClient()
+        let first = GeulGuardInputController(server: nil, delegate: nil, client: nil)!
+        var second: GeulGuardInputController? = GeulGuardInputController(server: nil, delegate: nil, client: nil)!
+        XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
+        XCTAssertTrue(first.handle(key("r", code: 15), client: firstClient))
+        XCTAssertTrue(second!.handle(key("k", code: 40), client: secondClient))
+        XCTAssertTrue(GeulGuardInputController.hasPendingComposition)
+        first.deactivateServer(firstClient)
+        XCTAssertEqual(firstClient.string, "ㄱ")
+        XCTAssertTrue(GeulGuardInputController.hasPendingComposition)
+        second?.commitComposition(secondClient)
+        XCTAssertEqual(secondClient.string, "ㅏ")
+        XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
+        XCTAssertTrue(second!.handle(key("r", code: 15), client: secondClient))
+        second = nil
+        XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
+    }
+
+    @MainActor
+
     func testEmptyCommitDoesNotEraseSelectedEnglishText() {
         let client = TextClient()
         client.string = "abcdef"

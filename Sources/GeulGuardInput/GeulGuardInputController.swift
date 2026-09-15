@@ -1,14 +1,22 @@
 import AppKit
 import HangulCore
 import InputMethodKit
+import os
 
 @objc(GeulGuardInputController)
 final class GeulGuardInputController: IMKInputController {
+    private static let composingSessions = OSAllocatedUnfairLock(initialState: Set<ObjectIdentifier>())
+
+    static var hasPendingComposition: Bool {
+        composingSessions.withLock { !$0.isEmpty }
+    }
+
     private var composer = HangulComposer()
     private let noReplacement = NSRange(location: NSNotFound, length: NSNotFound)
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         guard let event, let client = sender as? IMKTextInput else { return false }
+        defer { recordCompositionState() }
 
         guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty else {
             commitComposition(to: client)
@@ -44,6 +52,7 @@ final class GeulGuardInputController: IMKInputController {
     }
 
     override func commitComposition(_ sender: Any!) {
+        defer { recordCompositionState() }
         guard let client = sender as? IMKTextInput else {
             composer.cancel()
             return
@@ -52,12 +61,30 @@ final class GeulGuardInputController: IMKInputController {
     }
 
     override func deactivateServer(_ sender: Any!) {
+        defer { recordCompositionState() }
         if let client = sender as? IMKTextInput {
             commitComposition(to: client)
         } else {
             composer.cancel()
         }
         super.deactivateServer(sender)
+    }
+
+    deinit {
+        let identifier = ObjectIdentifier(self)
+        _ = Self.composingSessions.withLock { $0.remove(identifier) }
+    }
+
+    private func recordCompositionState() {
+        let identifier = ObjectIdentifier(self)
+        let hasComposition = composer.hasComposition
+        Self.composingSessions.withLock { sessions in
+            if hasComposition {
+                sessions.insert(identifier)
+            } else {
+                sessions.remove(identifier)
+            }
+        }
     }
 
     private func apply(_ update: CompositionUpdate, to client: IMKTextInput) {
