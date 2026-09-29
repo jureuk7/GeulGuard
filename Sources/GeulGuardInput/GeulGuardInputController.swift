@@ -141,6 +141,7 @@ final class GeulGuardInputController: IMKInputController {
             selectionRange: NSRange(location: marked.length, length: 0),
             replacementRange: noReplacement
         )
+        if update.composing.isEmpty { telegramUsesMarkedFallback = false }
     }
 
     private func commitComposition(to client: IMKTextInput) {

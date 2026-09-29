@@ -197,7 +197,14 @@ final class InputControllerTests: XCTestCase {
             // honors, instead of an empty replacement it ignores.
             XCTAssertFalse(controller.handle(key("\u{7f}", code: 51), client: client))
             XCTAssertEqual(client.string, "ㄱ")
+            client.deleteBackward()
+            XCTAssertEqual(client.string, "")
+            XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
             XCTAssertFalse(controller.handle(key("\u{7f}", code: 51), client: client))
+            XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+            XCTAssertTrue(controller.handle(key("k", code: 40), client: client))
+            XCTAssertEqual(client.string, "가")
+            XCTAssertFalse(client.hasMarkedText)
             XCTAssertEqual(client.markedWrites, 0)
         }
     }
@@ -376,6 +383,49 @@ final class InputControllerTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func testTelegramInlineResumesAfterDeletingFallbackComposition() {
+        withTelegramInlineSetting(false) {
+            let client = TextClient(bundleID: "ru.keepcoder.Telegram")
+            let controller = GeulGuardInputController(server: nil, delegate: nil, client: nil)!
+            defer { controller.commitComposition(client) }
+            XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+            XCTAssertTrue(client.hasMarkedText)
+            UserDefaults.standard.set(true, forKey: GeulGuardPreferences.telegramInlineCompositionKey)
+            XCTAssertTrue(controller.handle(key("\u{7f}", code: 51), client: client))
+            XCTAssertEqual(client.string, "")
+            XCTAssertFalse(client.hasMarkedText)
+            XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
+            XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+            XCTAssertTrue(controller.handle(key("k", code: 40), client: client))
+            XCTAssertEqual(client.string, "가")
+            XCTAssertFalse(client.hasMarkedText, "새 조합에는 활성화된 인라인 설정이 적용되어야 한다")
+        }
+    }
+
+    @MainActor
+    func testTelegramInlineResumesAfterDeletingUnavailableSelectionFallback() {
+        withTelegramInlineSetting(true) {
+            let client = TextClient(bundleID: "ru.keepcoder.Telegram")
+            let controller = GeulGuardInputController(server: nil, delegate: nil, client: nil)!
+            defer { controller.commitComposition(client) }
+            client.omitsSelectedRange = true
+            XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+            XCTAssertTrue(client.hasMarkedText)
+            client.omitsSelectedRange = false
+            XCTAssertTrue(controller.handle(key("\u{7f}", code: 51), client: client))
+            XCTAssertEqual(client.string, "")
+            XCTAssertFalse(client.hasMarkedText)
+            XCTAssertFalse(GeulGuardInputController.hasPendingComposition)
+            let markedWrites = client.markedWrites
+            XCTAssertTrue(controller.handle(key("r", code: 15), client: client))
+            XCTAssertTrue(controller.handle(key("k", code: 40), client: client))
+            XCTAssertEqual(client.string, "가")
+            XCTAssertFalse(client.hasMarkedText)
+            XCTAssertEqual(client.markedWrites, markedWrites)
+        }
+    }
+
     func testTelegramInlineSettingDefaultsOff() {
         let defaults = UserDefaults.standard
         let key = GeulGuardPreferences.telegramInlineCompositionKey
@@ -420,6 +470,7 @@ private final class TextClient: NSObject, @preconcurrency IMKTextInput {
     var markedWrites = 0
     var insertRanges: [NSRange] = []
     var omitsAttributedSubstring = false
+    var omitsSelectedRange = false
     let bundleID: String
     private let view = NSTextView()
     init(bundleID: String = "dev.jureuk.GeulGuardTests") {
@@ -430,7 +481,10 @@ private final class TextClient: NSObject, @preconcurrency IMKTextInput {
         set { view.string = newValue }
     }
     func setSelectedRange(_ range: NSRange) { view.setSelectedRange(range) }
-    func selectedRange() -> NSRange { view.selectedRange() }
+    func selectedRange() -> NSRange {
+        omitsSelectedRange ? NSRange(location: NSNotFound, length: 0) : view.selectedRange()
+    }
+    func deleteBackward() { view.deleteBackward(nil) }
     func markedRange() -> NSRange { view.markedRange() }
     var hasMarkedText: Bool { view.hasMarkedText() }
     func insertText(_ string: Any!, replacementRange: NSRange) {
