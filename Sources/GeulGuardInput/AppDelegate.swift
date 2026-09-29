@@ -112,9 +112,9 @@ private struct SettingsView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Toggle("[실험실] 텔레그램에서 조합 중 Enter로 바로 전송", isOn: $telegramInlineComposition)
+                Toggle("[실험실] 텔레그램 Enter 전송 보정", isOn: $telegramInlineComposition)
                     .font(.headline)
-                Text("텔레그램에서는 조합 중인 글자에 밑줄이 표시되지 않습니다.")
+                Text("텔레그램에서 한글 입력 중 Enter를 누르면 전송되지 않고 줄이 바뀌는 문제를 방지합니다.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
