@@ -77,6 +77,8 @@ private struct SettingsView: View {
     @ObservedObject var updates: UpdateController
     @AppStorage(GeulGuardPreferences.combineRepeatedInitialsKey)
     private var combineRepeatedInitials = true
+    @AppStorage(GeulGuardPreferences.telegramInlineCompositionKey)
+    private var telegramInlineComposition = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
@@ -105,6 +107,14 @@ private struct SettingsView: View {
                 Toggle("연속 자음을 쌍자음으로 조합", isOn: $combineRepeatedInitials)
                     .font(.headline)
                 Text(combineRepeatedInitials ? "ㄱㄱ을 ㄲ으로 조합합니다." : "ㄱㄱ을 각각 입력합니다.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Toggle("[실험실] 텔레그램에서 조합 중 Enter로 바로 전송", isOn: $telegramInlineComposition)
+                    .font(.headline)
+                Text("텔레그램에서는 조합 중인 글자에 밑줄이 표시되지 않습니다.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }

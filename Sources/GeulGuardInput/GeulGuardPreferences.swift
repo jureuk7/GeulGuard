@@ -12,4 +12,10 @@ enum GeulGuardPreferences {
     static var combinesRepeatedInitials: Bool {
         UserDefaults.standard.object(forKey: combineRepeatedInitialsKey) as? Bool ?? true
     }
+
+    static let telegramInlineCompositionKey = "telegramInlineComposition"
+
+    static var usesTelegramInlineComposition: Bool {
+        UserDefaults.standard.object(forKey: telegramInlineCompositionKey) as? Bool ?? false
+    }
 }
