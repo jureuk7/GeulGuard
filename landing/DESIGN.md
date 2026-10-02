@@ -114,8 +114,8 @@ SSR 원문은 항상 보이고 JS 실행 후에만 등장 효과를 적용한다
 헤더는 데스크톱 76px, 모바일 68px 높이. 헤더 메뉴만 ghost 예외를 적용하고 GitHub는 접근성 이름이 있는 Lucide 아이콘으로 표시한다. 보조 CTA·검증 링크·라이선스의 장식 화살표는 제거한다.
 
 ## 설치 안내·서체·공통 헤더
-Pretendard Variable을 자체 호스팅하여 전역 적용한다(동봉 OFL 라이선스). 단계 선택은 예외적으로 배경 없는 텍스트로 유지한다. 입력 체험은 제목·설명·입력창을 중앙 열로 배치한다. 공통 헤더는 홈 로고, 배포 기록, 설치 방법, GitHub를 모든 페이지에 표시한다.
-로컬 Pretendard Variable을 우선 사용하고 jsDelivr의 공식 Pretendard 배포본을 네트워크 fallback으로 둔다. 제목·본문·버튼·입력 컨트롤은 모두 같은 전역 sans-serif 스택을 사용한다.
+Interlude Variable을 자체 호스팅하여 전역 적용한다(SIL Open Font License 1.1). 단계 선택은 예외적으로 배경 없는 텍스트로 유지한다. 입력 체험은 제목·설명·입력창을 중앙 열로 배치한다. 공통 헤더는 홈 로고, 배포 기록, 설치 방법, GitHub를 모든 페이지에 표시한다.
+공식 `interlude-ui@1.3.0`의 Dynamic Subset CSS를 사용한다. 브라우저가 필요한 글자 범위의 WOFF2만 로드하며 폰트와 CSS는 Next.js 빌드에 포함된다. 제목·본문·버튼·입력 컨트롤은 같은 전역 sans-serif 스택을 사용하고 시스템 서체를 fallback으로 둔다. `font-optical-sizing: auto`로 글자 크기에 맞춰 Text–Display 형태를 자동 선택한다. 큰 제목은 opsz 축의 상한인 32에 해당하는 Display 형태를 사용하며, 기존 크기·굵기·자간은 유지한다. 참고: https://avanturation.com/interlude · https://github.com/avanturation/interlude
 로그인 단계는 Apple Support의 macOS Sequoia 로그인 화면을 사용한다. 출처: https://support.apple.com/en-us/102633 (이미지: https://cdsassets.apple.com/live/7WUAS350/images/macos/sequoia/macos-sequoia-login-window-password-entry.png). 이미지 원본을 외부 URL로 표시한다.
 
 입력 체험은 빈 값과 placeholder로 시작하고 자동 입력하지 않는다. 직접 입력할 때만 6색 순서·각도·색상 간격을 매번 섞은 그라디언트가 나타나고 검은색으로 정착한다.

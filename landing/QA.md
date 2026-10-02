@@ -1,5 +1,40 @@
 # 검증 기록
 
+## 2026-10-02 · Interlude 서체
+
+- `interlude-ui@1.3.0`의 공식 Dynamic Subset CSS를 사용한 프로덕션 빌드 통과.
+- `pnpm typecheck`, `pnpm format:check`, `pnpm test` 통과(11개 테스트).
+- `pnpm lint` 통과. 기존 스타일 파일의 `useLiteralKeys` 안내 26건이 있으며,
+  수정한 소스 4개의 개별 린트에는 진단이 없다.
+- Git 워크트리 생성은 iCloud의 `mmap failed: Operation canceled`로 실패했다.
+  `/private/tmp/geulguard-interlude-qa`에 별도 소스·의존성·빌드 캐시를 구성하고,
+  `.wt-env`의 포트로 검증했다. 미리보기: http://127.0.0.1:64321.
+- Codex 내장 브라우저에서 홈·배포 기록, 라이트·다크 테마, 한영 혼합 입력을 확인했다.
+  `body`, 제목, 버튼, 입력창의 computed font-family는 `Interlude Variable`로 시작하고
+  font-optical-sizing은 `auto`다.
+
+| 화면 | 뷰포트 폭 | 문서 폭 | 제목 크기: 기존 토큰 / 실측 |
+| --- | --- | --- | --- |
+| 홈 | 1440px | 1440px | 76px / 76px |
+| 홈 | 1280px | 1280px | 76px / 76px |
+| 홈 | 390px | 390px | 48px / 48px |
+| 홈 | 320px | 320px | 모바일 제목·본문·내비게이션 넘침 없음 |
+| 배포 기록 | 1440px | 1440px | 52px / 52px |
+| 배포 기록 | 390px | 390px | 36px / 36px |
+
+- 빌드 CSS에 참조된 WOFF2 187개를 로컬 서버에 HEAD 요청해 모두
+  HTTP 200 / `font/woff2`를 확인했다. 브라우저는 unicode-range에 해당하는 파일만 요청한다.
+- 외부 폰트 CDN 링크가 없고, `/fonts/Interlude-LICENSE.txt`가 HTTP 200으로 제공된다.
+- 브라우저 오류·경고 로그 없음. `git diff --check` 통과.
+- 스크린샷: 저장소 루트 `.omo/evidence/interlude/`의 `desktop.jpg`, `mobile.jpg`,
+  `input-320.jpg`, `releases-dark.jpg`, `releases-mobile.jpg`.
+- 실제 macOS IME, OS 모션 감소 설정, 다른 브라우저 엔진은 이번 서체 검증 범위에 포함하지 않았다.
+- 커밋 전 frontend-fundamentals의 가독성·예측 가능성·응집도·결합도 기준으로
+  변경된 프론트엔드 코드를 직접 검토했다. 라운드 1: Critical 0 / Warnings 0 /
+  Suggestions 0. 별도 reviewer 에이전트는 사용하지 않았다.
+
+## 2026-09-11 · 초기 랜딩
+
 2026-09-11 로컬 Next.js 프로덕션 빌드, http://localhost:43187.
 
 - `pnpm build`: 정적 홈 페이지 빌드 통과.

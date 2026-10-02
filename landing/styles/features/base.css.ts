@@ -19,6 +19,7 @@ globalStyle("body", {
 	background: `${tokens.color.canvas}`,
 	color: `${tokens.color.ink}`,
 	fontFamily: `${tokens.type.family}`,
+	fontOpticalSizing: "auto",
 	fontSize: `${tokens.type.size.body}`,
 	lineHeight: "1.65",
 	wordBreak: "keep-all",

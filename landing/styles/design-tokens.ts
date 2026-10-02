@@ -215,7 +215,7 @@ export const designTokens = {
 	},
 	type: {
 		family:
-			'var(--font-pretendard, "Pretendard Variable"), "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+			'"Interlude Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif',
 		weight: { regular: "400", medium: "500" },
 		size: {
 			micro: "10px",

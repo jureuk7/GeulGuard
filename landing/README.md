@@ -48,6 +48,18 @@ pnpm start --port 43187
 대체하지 않습니다. 개발 모드의 react-grab/react-scan은
 `NEXT_PUBLIC_DISABLE_REACT_DEVTOOLS=1`로 끌 수 있으며 프로덕션 화면에는 로드하지 않습니다.
 
+## 서체
+
+전역 서체는 [Interlude](https://avanturation.com/interlude)입니다. `interlude-ui@1.3.0`의
+공식 Dynamic Subset CSS를 루트 레이아웃에서 가져오며, WOFF2 파일은 Next.js 빌드에
+포함되어 자체 호스팅됩니다. 브라우저는 화면에 필요한 글자 범위만 내려받습니다.
+`font-display: swap`으로 로딩 중에도 시스템 서체로 내용을 표시합니다.
+
+제목·본문·버튼·입력창은 공통 서체 토큰을 사용합니다. `font-optical-sizing: auto`로
+작은 글자는 Text, 큰 제목은 Display에 맞는 형태를 사용하며, 굵기와 자간은 기존
+토큰을 유지합니다. SIL Open Font License 1.1 사본은
+`public/fonts/Interlude-LICENSE.txt`에 포함됩니다.
+
 ## 배포 기록·카라비너 설정
 
 배포 기록 팝업은 GitHub `main/CHANGELOG.md`를 서버에서 받아 렌더링합니다.
