@@ -19,9 +19,9 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.6.1</string>
+    <string>0.6.2</string>
     <key>CFBundleVersion</key>
-    <string>10</string>
+    <string>11</string>
     <key>ComponentInputModeDict</key>
     <dict>
         <key>tsInputModeListKey</key>
@@ -80,6 +80,8 @@
     <true/>
     <key>TISIntendedLanguage</key>
     <string>ko</string>
+    <key>TICapsLockLanguageSwitchCapable</key>
+    <true/>
     <key>tsInputMethodCharacterRepertoireKey</key>
     <array>
         <string>Hang</string>

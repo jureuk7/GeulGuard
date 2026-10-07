@@ -67,6 +67,14 @@ ESC는 조합 중인 한글만 확정하며 입력 소스를 바꾸지 않습니
 - Caps Lock의 ‘길게 눌러 대문자 고정’ 동작은 기본 입력 전환 옵션에 함께
   포함됩니다. 대문자 고정 없이 전환만 하려면 아래 규칙을 사용합니다.
 
+글가드는 `TICapsLockLanguageSwitchCapable`로 macOS 기본 Caps Lock 전환 지원을
+선언합니다. Karabiner 없이 기본 전환을 쓰려면 텍스트 입력 → 편집 → 모든 입력
+소스에서 Caps Lock 전환 옵션을 켭니다. 0.6.2 이전 버전에는 이 선언이 없습니다.
+업데이트 후 옵션이 보이지 않으면 작업을 저장하고 로그아웃·로그인하세요.
+macOS 27.0에서 ABC와 글가드만 등록한 상태의 옵션 표시·활성화는 설치 후
+사용자 스크린샷으로 확인했습니다. Karabiner를 끈 상태의 양방향 전환은 아직
+실기 검증하지 않았습니다.
+
 ### 2. Caps Lock을 입력 전환 전용으로 사용
 
 1. [Karabiner-Elements 공식 사이트](https://karabiner-elements.pqrs.org/)에서

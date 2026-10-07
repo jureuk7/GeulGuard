@@ -26,6 +26,14 @@ final class InputSourceAppearanceTests: XCTestCase {
         XCTAssertNil(mode["tsInputModeAlternateMenuIconFileKey"])
     }
 
+    func testInputSourceDeclaresNativeCapsLockSwitching() throws {
+        let infoData = try Data(contentsOf: projectRoot.appendingPathComponent("Resources/Info.plist"))
+        let info = try XCTUnwrap(
+            PropertyListSerialization.propertyList(from: infoData, format: nil) as? [String: Any]
+        )
+        XCTAssertEqual(info["TICapsLockLanguageSwitchCapable"] as? Bool, true)
+    }
+
     func testInputSourceNameIsLocalized() throws {
         let expectedNames = [
             "ko": "글가드 두벌식",
