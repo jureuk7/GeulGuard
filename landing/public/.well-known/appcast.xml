@@ -5,11 +5,11 @@
     <link>https://geulguard.jureuk.dev/.well-known/appcast.xml</link>
     <description>글가드 업데이트</description>
     <item>
-      <title>GeulGuard 0.6.1</title>
-      <sparkle:version>10</sparkle:version>
-      <sparkle:shortVersionString>0.6.1</sparkle:shortVersionString>
+      <title>GeulGuard 0.6.2</title>
+      <sparkle:version>11</sparkle:version>
+      <sparkle:shortVersionString>0.6.2</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <enclosure url="https://github.com/jureuk7/GeulGuard/releases/download/v0.6.1/GeulGuard.pkg" length="1638556" type="application/octet-stream" sparkle:installationType="package" sparkle:edSignature="w1C3cHJ/2kkj3xc87FV3iwO4c9TW3wUbe5HhGnAM5C8SHHznrWahmsxGGj82MsjItW1LH3OUzVlOTDPBB5ipDw==" />
+      <enclosure url="https://github.com/jureuk7/GeulGuard/releases/download/v0.6.2/GeulGuard.pkg" length="1638392" type="application/octet-stream" sparkle:installationType="package" sparkle:edSignature="t/nN237JimV3mvIWjVtjXRfJkdfpkJjVgX/mnlKDCmRcStMt7A24bCHfEUcKxFhVmeqTWiuGlxemMjYFPrh3Cw==" />
     </item>
   </channel>
 </rss>
