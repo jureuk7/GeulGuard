@@ -102,7 +102,7 @@ SSR 원문은 항상 보이고 JS 실행 후에만 등장 효과를 적용한다
 ## 히어로 문구 전환
 ‘쓰던 한글,’은 120ms 간격으로 글자 단위 등장하고 ‘끝까지.’는 이어서 청색·청록·보라 그라디언트가 왼쪽부터 오른쪽으로 1100ms 동안 부드럽게 드러난다. 선명한 잘림 대신 넓은 페더 마스크와 3px→0 블러로 경계가 번지며 선명해진다. 전체 문장 공간을 미리 확보해 타이핑 중에도 중앙 정렬과 줄바꿈이 흔들리지 않는다. h1은 별도 진입 애니메이션에서 제외하고 모션 감소 설정에서는 즉시 표시한다.
 
-입력 소스 단계 제목은 ‘글가드 입력 방식 추가’. 사진은 라벨 없이 정사각형·라운드 0, 데스크톱 최대 460px / 모바일 최대 300px로 표시한다.
+입력 소스 단계 제목은 ‘글가드 입력 방식 추가’. ABC와 ‘GeulGuard - 두벌식’이 보이는 사용자 제공 1000×1000px 메뉴 사진을 사용한다. 사진은 라벨 없이 정사각형·라운드 0, 데스크톱 최대 460px / 모바일 최대 300px로 표시한다.
 
 히어로 ‘끝까지.’는 타이핑 섹션의 fresh-ink를 재사용한다. 왼쪽부터 120ms 간격으로 그라디언트가 나타나고 각 글자는 550ms 안에 검은색으로 정착한다. 이전 마스크 전환은 사용하지 않는다.
 
@@ -230,6 +230,7 @@ Keyboard key faces use a softened rim and near-flat white fill. Pressed keys sta
 
 Privacy visualization uses a 18×7 cell field: three column groups fill for initial, medial and final consonant composition, then clear as the app receives the syllable. Empty state labels stay blank instead of using dash placeholders. Brand-blue intensity is illustrative, never a memory metric. Reduced motion skips to the cleared buffer and committed text; replay restarts the sequence.
 The privacy graphic surface uses a lighter low-saturation blue-gray in light mode and a charcoal blue-gray in dark mode; it does not use the former green-leaning neutral surface.
+The replay button uses the pale blue `memoryCellEmpty` surface in light mode and the shared `controlSurfaceHover` surface in dark mode.
 
 Action button and text-button labels use the shared 15px control token, with an 8px icon-to-label gap. Typographic step selectors and keycaps keep their own display scales.
 Adjacent action buttons use only 8–12px gaps. The keyboard Touch ID legend is a solid circle without an outline.

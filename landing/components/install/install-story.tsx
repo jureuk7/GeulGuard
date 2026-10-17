@@ -128,8 +128,8 @@ export function InstallStory() {
 										className={styles.sourceDesktop}
 										src="/images/input-source.png"
 										alt=""
-										width={512}
-										height={512}
+										width={1000}
+										height={1000}
 									/>
 								</div>
 							)}

@@ -145,7 +145,7 @@ const memoryStatusFragment2 = style({
 });
 
 globalStyle(`${classScopes.memoryFooter} button`, {
-	background: `${tokens.palette.neutral300}`,
+	background: `${tokens.color.memoryCellEmpty}`,
 });
 
 const memoryDemoFragment3 = style({
